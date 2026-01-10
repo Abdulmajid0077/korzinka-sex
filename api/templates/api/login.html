@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SAFO POS - Kirish</title>
+    <style>
+        /* ========================================
+           GLOBAL STYLES
+           ======================================== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #10b981;
+            --primary-dark: #059669;
+            --primary-light: #34d399;
+            --text-primary: #1f2937;
+            --text-secondary: #6b7280;
+            --border-color: #e5e7eb;
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+            --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+            --shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* Background Animation */
+        body::before {
+            content: '';
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(16, 185, 129, 0.1) 0%, transparent 70%);
+            animation: rotate 20s linear infinite;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* ========================================
+           LOGIN CONTAINER
+           ======================================== */
+        .login-container {
+            background: white;
+            border-radius: 24px;
+            box-shadow: var(--shadow-xl);
+            max-width: 450px;
+            width: 100%;
+            padding: 50px 40px;
+            position: relative;
+            z-index: 1;
+            animation: slideUp 0.5s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ========================================
+           LOGO SECTION
+           ======================================== */
+        .logo-section {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .logo-image {
+            width: 100%;
+            max-width: 280px;
+            height: auto;
+            margin-bottom: 20px;
+            filter: drop-shadow(0 4px 12px rgba(16, 185, 129, 0.3));
+            animation: logoFloat 3s ease-in-out infinite;
+        }
+
+        @keyframes logoFloat {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .welcome-text {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            font-size: 15px;
+            color: var(--text-secondary);
+        }
+
+        /* ========================================
+           FORM STYLES
+           ======================================== */
+        .login-form {
+            margin-top: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+            position: relative;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 20px;
+            color: var(--text-secondary);
+            transition: color 0.3s ease;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 14px 16px 14px 48px;
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: #f9fafb;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            background: white;
+            box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1);
+        }
+
+        .form-input:focus ~ .input-icon {
+            color: var(--primary-color);
+        }
+
+        /* Prevent zoom on iOS */
+        @supports (-webkit-touch-callout: none) {
+            .form-input {
+                font-size: 16px;
+            }
+        }
+
+        /* ========================================
+           PASSWORD TOGGLE
+           ======================================== */
+        .password-toggle {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 20px;
+            color: var(--text-secondary);
+            padding: 4px;
+            transition: color 0.3s ease;
+        }
+
+        .password-toggle:hover {
+            color: var(--primary-color);
+        }
+
+        /* ========================================
+           REMEMBER & FORGOT
+           ======================================== */
+        .form-options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .remember-me {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+
+        .remember-me input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            accent-color: var(--primary-color);
+        }
+
+        .remember-me label {
+            font-size: 14px;
+            color: var(--text-secondary);
+            cursor: pointer;
+        }
+
+        .forgot-password {
+            font-size: 14px;
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+
+        .forgot-password:hover {
+            color: var(--primary-dark);
+        }
+
+        /* ========================================
+           SUBMIT BUTTON
+           ======================================== */
+        .btn-login {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-login::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .btn-login:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(16, 185, 129, 0.4);
+        }
+
+        .btn-login:hover::before {
+            left: 100%;
+        }
+
+        .btn-login:active {
+            transform: translateY(0);
+        }
+
+        /* ========================================
+           FOOTER
+           ======================================== */
+        .login-footer {
+            margin-top: 30px;
+            text-align: center;
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .login-footer a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .login-footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* ========================================
+           BRANCH SELECTOR
+           ======================================== */
+        .branch-selector {
+            margin-bottom: 24px;
+        }
+
+        .branch-select {
+            width: 100%;
+            padding: 14px 16px 14px 48px;
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            font-size: 15px;
+            transition: all 0.3s ease;
+            background: #f9fafb;
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236b7280' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 16px center;
+        }
+
+        .branch-select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            background-color: white;
+            box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1);
+        }
+
+        /* ========================================
+           ERROR MESSAGE
+           ======================================== */
+        .error-message {
+            display: none;
+            background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+            color: #dc2626;
+            padding: 12px 16px;
+            border-radius: 10px;
+            font-size: 14px;
+            margin-bottom: 20px;
+            border-left: 4px solid #dc2626;
+            animation: shake 0.5s ease;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        /* ========================================
+           RESPONSIVE - TABLET
+           ======================================== */
+        @media (max-width: 768px) and (min-width: 481px) {
+            .login-container {
+                max-width: 500px;
+                padding: 45px 35px;
+            }
+
+            .logo-image {
+                max-width: 260px;
+            }
+        }
+
+        /* ========================================
+           RESPONSIVE - MOBILE & iOS
+           ======================================== */
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+
+            .login-container {
+                padding: 35px 25px;
+                border-radius: 20px;
+            }
+
+            .logo-image {
+                max-width: 200px;
+            }
+
+            .welcome-text {
+                font-size: 22px;
+            }
+
+            .subtitle {
+                font-size: 14px;
+            }
+
+            .form-input {
+                padding: 13px 16px 13px 46px;
+            }
+
+            .btn-login {
+                padding: 15px;
+                font-size: 15px;
+            }
+        }
+
+        /* iOS Specific */
+        @supports (-webkit-touch-callout: none) {
+            .login-container {
+                -webkit-tap-highlight-color: transparent;
+            }
+
+            .btn-login {
+                -webkit-appearance: none;
+                -webkit-tap-highlight-color: rgba(16, 185, 129, 0.3);
+            }
+        }
+
+        /* Windows High Contrast Mode */
+        @media (prefers-contrast: high) {
+            .form-input {
+                border-width: 2px;
+            }
+
+            .btn-login {
+                border: 2px solid var(--primary-color);
+            }
+        }
+
+        /* Dark Mode Support */
+        @media (prefers-color-scheme: dark) {
+            /* Keep light theme for login page */
+        }
+
+        /* ========================================
+           LANDSCAPE MOBILE
+           ======================================== */
+        @media (max-height: 600px) and (orientation: landscape) {
+            body {
+                padding: 10px 20px;
+            }
+
+            .login-container {
+                max-width: 600px;
+                padding: 25px 30px;
+            }
+
+            .logo-section {
+                margin-bottom: 20px;
+            }
+
+            .logo-image {
+                max-width: 180px;
+            }
+
+            .welcome-text {
+                font-size: 20px;
+                margin-bottom: 4px;
+            }
+
+            .subtitle {
+                font-size: 13px;
+            }
+
+            .form-group {
+                margin-bottom: 16px;
+            }
+
+            .login-footer {
+                margin-top: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    
+    <div class="login-container">
+        <!-- Logo Section -->
+        <div class="logo-section">
+            <img src="photo/logo.png" alt="SAFO POS Logo" class="logo-image">
+            <h1 class="welcome-text">Xush kelibsiz!</h1>
+            <p class="subtitle">Tizimga kirish uchun ma'lumotlaringizni kiriting</p>
+        </div>
+
+        <!-- Error Message -->
+        <div class="error-message" id="errorMessage">
+            Login yoki parol noto'g'ri!
+        </div>
+
+        <!-- Login Form -->
+        <form class="login-form" id="loginForm" onsubmit="handleLogin(event)">
+
+            <!-- Username -->
+            <div class="form-group">
+                <label class="form-label">Login</label>
+                <div class="input-wrapper">
+                    <span class="input-icon">👤</span>
+                    <input type="text" 
+                           class="form-input" 
+                           id="username" 
+                           placeholder="Login kiriting"
+                           required
+                           autocomplete="username">
+                </div>
+            </div>
+
+            <!-- Password -->
+            <div class="form-group">
+                <label class="form-label">Parol</label>
+                <div class="input-wrapper">
+                    <span class="input-icon">🔒</span>
+                    <input type="password" 
+                           class="form-input" 
+                           id="password" 
+                           placeholder="Parolni kiriting"
+                           required
+                           autocomplete="current-password">
+                    <button type="button" class="password-toggle" onclick="togglePassword()">
+                        <span id="toggleIcon">👁️</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Remember & Forgot -->
+            <div class="form-options">
+                <label class="remember-me">
+                    <input type="checkbox" id="remember">
+                    <span>Eslab qolish</span>
+                </label>
+                <a href="#" class="forgot-password">Parolni unutdingizmi?</a>
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit" class="btn-login">
+                Kirish
+            </button>
+        </form>
+
+        <!-- Footer -->
+        <div class="login-footer">
+            <p>© 2025 SAFO POS. Barcha huquqlar himoyalangan.</p>
+            <p style="margin-top: 8px;">Yordam kerakmi? <a href="#">Qo'llab-quvvatlash</a></p>
+        </div>
+    </div>
+
+    <script>
+        // Password Toggle
+        function togglePassword() {
+            const passwordInput = document.getElementById('password');
+            const toggleIcon = document.getElementById('toggleIcon');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                toggleIcon.textContent = '👁️‍🗨️';
+            } else {
+                passwordInput.type = 'password';
+                toggleIcon.textContent = '👁️';
+            }
+        }
+
+        // Handle Login
+        function handleLogin(event) {
+            event.preventDefault();
+            
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const remember = document.getElementById('remember').checked;
+            
+            // Demo credentials
+            const validUsers = {
+                'admin': '123456',
+                'kassir': '123456',
+                'menejer': '123456'
+            };
+            
+            // Check credentials
+            if (validUsers[username] && validUsers[username] === password) {
+                // Save to localStorage if remember is checked
+                if (remember) {
+                    localStorage.setItem('safo_pos_user', username);
+                }
+                
+                // Save session
+                sessionStorage.setItem('safo_pos_logged_in', 'true');
+                sessionStorage.setItem('safo_pos_user', username);
+                
+                // Show success animation
+                showSuccess();
+                
+                // Redirect to main page
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 1000);
+            } else {
+                // Show error
+                const errorMessage = document.getElementById('errorMessage');
+                errorMessage.classList.add('show');
+                
+                // Shake form
+                const loginContainer = document.querySelector('.login-container');
+                loginContainer.style.animation = 'shake 0.5s ease';
+                
+                setTimeout(() => {
+                    errorMessage.classList.remove('show');
+                    loginContainer.style.animation = '';
+                }, 3000);
+            }
+        }
+
+        // Success Animation
+        function showSuccess() {
+            const btn = document.querySelector('.btn-login');
+            btn.innerHTML = '✅ Muvaffaqiyatli!';
+            btn.style.background = 'linear-gradient(135deg, #10b981 0%, #059669 100%)';
+        }
+
+        // Check if user is already logged in
+        window.addEventListener('DOMContentLoaded', () => {
+            const loggedIn = sessionStorage.getItem('safo_pos_logged_in');
+            if (loggedIn === 'true') {
+                window.location.href = 'index.html';
+            }
+
+            // Pre-fill if remembered
+            const savedUser = localStorage.getItem('safo_pos_user');
+            if (savedUser) {
+                document.getElementById('username').value = savedUser;
+                document.getElementById('remember').checked = true;
+            }
+        });
+    </script>
+</body>
+</html>

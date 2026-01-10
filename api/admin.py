@@ -187,7 +187,7 @@ class SupplierAdmin(ModelAdmin):
 @admin.register(Expenses)
 class ExpenseAdmin(ModelAdmin):
     list_display = ('expense_type', 'worker_name', 'form_amount', 'expense_date')
-    search_fields = ('expense_type', )
+    list_filter = ('expense_type',)
     ordering = ('-expense_date',)
     fieldsets = (
         ("Harajat ", {
@@ -209,7 +209,7 @@ class ExpenseAdmin(ModelAdmin):
 @admin.register(ExpenseMachine)
 class ExpenseMachineAdmin(ModelAdmin):
     list_display = ('expense_type', 'form_amount', 'info', 'expense_date')
-    filters = ('expense_type',)
+    list_filter = ('expense_type',)
     ordering = ('-expense_date',)
     fieldsets = (
         ("Stanog harajatlari ", {

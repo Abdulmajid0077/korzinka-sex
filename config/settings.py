@@ -223,16 +223,12 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-import os
-from pathlib import Path
 
-BASE_DIR = Path(__file__).resolve().parent.parent
+STATIC_URL = '/'
 
-# URL orqali ko‘rinadigan static
-STATIC_URL = '/static/'
-
-# Fayllar yig‘iladigan joy — admin panel uchun ham yetarli
-STATIC_ROOT = BASE_DIR / "staticfiles"  # papkani ham yaratish kerak
+STATICFILES_DIRS = [
+    BASE_DIR / "static",    
+]
 
 
 
