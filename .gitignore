@@ -14,10 +14,16 @@ venv/
 # Django
 *.log
 local_settings.py
-db.sqlite3
-db.sqlite3-journal
 media/
 staticfiles/
+
+# SQLite (agar ishlatilsa)
+db.sqlite3
+db.sqlite3-journal
+
+# PostgreSQL / MySQL / MariaDB dump fayllari (agar saqlasangiz)
+*.sql
+*.dump
 
 # Migrations (agar xohlasang o‘chirmaysan)
 # */migrations/*.py

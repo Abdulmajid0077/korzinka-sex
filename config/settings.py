@@ -20,13 +20,18 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-t3n_tj=e9+!te4g-^a!)yfcd$1y-5qz=^6eyj4f(5p!)9%6($f'
+
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+
 
 ALLOWED_HOSTS = ['*']
 
+from dotenv import load_dotenv
+load_dotenv()
+
+import os
+DEBUG = os.getenv("DEBUG") == "True"
 
 # Application definition
 
@@ -50,6 +55,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -81,21 +87,33 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
+import os
+from pathlib import Path
+from dotenv import load_dotenv
+
+load_dotenv()  # .env faylni yuklaydi
+
+SECRET_KEY = os.getenv("SECRET_KEY")
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.getenv("DB_NAME"),
+        'USER': os.getenv("DB_USER"),
+        'PASSWORD': os.getenv("DB_PASSWORD"),
+        'HOST': os.getenv("DB_HOST"),
+        'PORT': os.getenv("DB_PORT"),
     }
 }
+
 
 from django.templatetags.static import static
 from django.urls import reverse_lazy
 from django.utils.translation import gettext_lazy as _
 
 UNFOLD = {
-    "SITE_TITLE": "Administration",
-    "SITE_HEADER": "Safo Korzinka",
-    "SITE_SUBHEADER": "Buhgalteiya boshqaruvi",
+    "SITE_TITLE": "SAFO | Ishlab chiqarish korxonasi",
+    "SITE_HEADER": "SAFO",
+    "SITE_SUBHEADER": "Ishlab chiqarish korxonasi boshqaruvi",
     "SITE_URL": "/",
 
     "SHOW_HISTORY": True, 
@@ -146,7 +164,7 @@ UNFOLD = {
             {
                 "title": _("Korzinka sehi"),
                 "separator": False,
-                "collapsible": False, 
+                "collapsible": True, 
                 "items": [
                     {
                         "title": _("Sarmoyadorlar"),
@@ -173,7 +191,7 @@ UNFOLD = {
                         "permission": lambda request: request.user.has_perm("api.products_view"),
                     },
                     {
-                        "title": _("Mijozlar"),
+                        "title": _("Haridorlar"),
                         "icon": "people_alt",
                         "link": reverse_lazy("admin:api_customers_changelist"),
                         "permission": lambda request: request.user.has_perm("api.customers_view"),
@@ -183,6 +201,12 @@ UNFOLD = {
                         "icon": "people_alt",
                         "link": reverse_lazy("admin:api_suppliers_changelist"),
                         "permission": lambda request: request.user.has_perm("api.suppliers_view"),
+                    },
+                    {
+                        "title": _("Qarzdorlik to'lovlari"),
+                        "icon": "payment",
+                        "link": reverse_lazy("admin:api_paymentdebt_changelist"),
+                        "permission": lambda request: request.user.has_perm("api.paymentdebt_view"),
                     },
                     {
                         "title": _("Harajatlar "),
@@ -196,8 +220,131 @@ UNFOLD = {
                         "link": reverse_lazy("admin:api_expensemachine_changelist"),
                         "permission": lambda request: request.user.has_perm("api.expensemachine_view"),
                     },
+                    {
+                        "title": _("Oylik hisobotlar"),
+                        "icon": "assessment",
+                        "link": reverse_lazy("admin:api_monthlyreport_changelist"),
+                        "permission": lambda request: request.user.has_perm("api.monthlyreport_view"),
+                    },
                 ],
                 
+            },
+            {
+                "title": _("Seriyo sehi"),
+                "separator": False,
+                "icon": "settings",
+                "collapsible": True,
+                "items": [
+                    {
+                        "title": _("Mahsulot qabul qilish"),
+                        "icon": "inventory",
+                        "link": reverse_lazy("admin:api_spurchases_changelist"),
+                        "permission": lambda request: request.user.has_perm("api.spurchases_view"),
+                    },
+                    {
+                        "title": _("Sotuvlar"),
+                        "icon": "point_of_sale",
+                        "link": reverse_lazy("admin:api_ssales_changelist"),
+                        "permission": lambda request: request.user.has_perm("api.ssales_view"),
+                    },
+                    {
+                        "title": _("Mahsulotlar ombori"),
+                        "icon": "inventory",
+                        "link": reverse_lazy("admin:api_sproducts_changelist"),
+                        "permission": lambda request: request.user.has_perm("api.sproducts_view"),
+                    },
+                    {
+                        "title": _("Haridorlar"),
+                        "icon": "people_alt",
+                        "link": reverse_lazy("admin:api_scustomers_changelist"),
+                        "permission": lambda request: request.user.has_perm("api.scustomers_view"),
+                    },
+                    {
+                        "title": _("Yetkazib beruvchilar"),
+                        "icon": "people_alt",
+                        "link": reverse_lazy("admin:api_ssupplier_changelist"),
+                        "permission": lambda request: request.user.has_perm("api.ssupplier_view"),
+                    },
+                    {
+                        "title": _("Qarzdorlik to'lovlari"),
+                        "icon": "payment",
+                        "link": reverse_lazy("admin:api_spaymentdebt_changelist"),
+                        "permission": lambda request: request.user.has_perm("api.spaymentdebt_view"),
+                    },
+                    {
+                        "title": _("Harajatlar "),
+                        "icon": " list",
+                        "link": reverse_lazy("admin:api_sexpenses_changelist"),
+                        "permission": lambda request: request.user.has_perm("api.sexpenses_view"),
+                    },
+                    {
+                        "title": _("Stanog harajatlari "),
+                        "icon": " list",
+                        "link": reverse_lazy("admin:api_sexpensemachine_changelist"),
+                        "permission": lambda request: request.user.has_perm("api.sexpensemachine_view"),
+                    },
+                    {
+                        "title": _("Oylik hisobotlar"),
+                        "icon": "assessment",
+                        "link": reverse_lazy("admin:api_smonthlyreport_changelist"),
+                        "permission": lambda request: request.user.has_perm("api.smonthlyreport_view"),
+                    },
+                ],
+            },
+            {
+                "title": _("Salfetka sehi"),
+                "separator": False,
+                "collapsible": True, 
+                "items": [
+                    {
+                        "title": _("Mahsulot qabul qilish"),
+                        "icon": "inventory",
+                        "link": reverse_lazy("admin:api_salpurchases_changelist"),
+                        "permission": lambda request: request.user.has_perm("api.salpurchases_view"),
+                    },
+                    {
+                        "title": _("Sotuvlar"),
+                        "icon": "point_of_sale",
+                        "link": reverse_lazy("admin:api_salsales_changelist"),
+                        "permission": lambda request: request.user.has_perm("api.salsales_view"),
+                    },
+                    {
+                        "title": _("Mahsulotlar ombori"),
+                        "icon": "inventory",
+                        "link": reverse_lazy("admin:api_salproducts_changelist"),
+                        "permission": lambda request: request.user.has_perm("api.salproducts_view"),
+                    },
+                    {
+                        "title": _("Haridorlar"),
+                        "icon": "people_alt",
+                        "link": reverse_lazy("admin:api_salcustomers_changelist"),
+                        "permission": lambda request: request.user.has_perm("api.salcustomers_view"),
+                    },
+                    {
+                        "title": _("Yetkazib beruvchilar"),
+                        "icon": "people_alt",
+                        "link": reverse_lazy("admin:api_salsuppliers_changelist"),
+                        "permission": lambda request: request.user.has_perm("api.salsuppliers_view"),
+                    },
+                    {
+                        "title": _("Qarzdorlik to'lovlari"),
+                        "icon": "payment",
+                        "link": reverse_lazy("admin:api_salpaymentdebts_changelist"),
+                        "permission": lambda request: request.user.has_perm("api.salpaymentdebts_view"),
+                    },
+                    {
+                        "title": _("Harajatlar "),
+                        "icon": " list",
+                        "link": reverse_lazy("admin:api_salexpenses_changelist"),
+                        "permission": lambda request: request.user.has_perm("api.salexpenses_view"),
+                    },
+                    {
+                        "title": _("Oylik hisobotlar"),
+                        "icon": "assessment",
+                        "link": reverse_lazy("admin:api_salmonthlyreports_changelist"),
+                        "permission": lambda request: request.user.has_perm("api.salmonthlyreports_view"),
+                    },
+                ],
             },
             ],
     },
@@ -224,13 +371,9 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
-STATIC_URL = '/'
-
-STATICFILES_DIRS = [
-    BASE_DIR / "static",    
-]
-
-
+STATIC_URL = '/static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'  
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Internationalization
 # https://docs.djangoproject.com/en/6.0/topics/i18n/
