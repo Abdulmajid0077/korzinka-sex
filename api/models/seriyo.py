@@ -8,6 +8,10 @@ class SProducts(models.Model):
     quantity = models.DecimalField(max_digits=25, decimal_places=2, verbose_name="Miqdori")
     price = models.DecimalField(max_digits=25, decimal_places=2, verbose_name="Narxi")
 
+    class Meta:
+        verbose_name = "Mahsulot"
+        verbose_name_plural = "Mahsulotlar"
+
     def __str__(self):
         return self.name
 
@@ -16,6 +20,10 @@ class SSupplier(models.Model):
     phone = models.CharField(max_length=20, verbose_name="Telefon raqami")
     debt = models.DecimalField(max_digits=25, decimal_places=2, verbose_name="Qarz", default=0)
     info = models.TextField(blank=True, null=True, verbose_name="Qo'shimcha ma'lumot")
+
+    class Meta:
+        verbose_name = "Yetkazib beruvchi"
+        verbose_name_plural = "Yetkazib beruvchilar"
 
     def __str__(self):
         return self.name
@@ -28,6 +36,10 @@ class SPurchases(models.Model):
     is_debt = models.BooleanField(default=False, verbose_name="Qarzdorlik")
     info = models.TextField(blank=True, null=True, verbose_name="Qo'shimcha ma'lumot")
     purchase_date = models.DateTimeField(auto_now_add=True, verbose_name="Sotib olingan sana")
+
+    class Meta:
+        verbose_name = "Xarid"
+        verbose_name_plural = "Xaridlar"
 
     def __str__(self):
         return f"{self.product.name} from {self.supplier.name}"
@@ -63,6 +75,10 @@ class SCustomers(models.Model):
     debt = models.DecimalField(max_digits=25, decimal_places=2, verbose_name="Qarz miqdori", default=0)
     info = models.TextField(blank=True, null=True, verbose_name="Qo'shimcha ma'lumot")
 
+    class Meta:
+        verbose_name = "Xaridor"
+        verbose_name_plural = "Xaridorlar"
+
     def __str__(self):
         return self.name
 
@@ -74,6 +90,10 @@ class SSales(models.Model):
     is_debt = models.BooleanField(default=False, verbose_name="Qarzdorlik")
     info = models.TextField(blank=True, null=True, verbose_name="Qo'shimcha ma'lumot")
     sale_date = models.DateTimeField(auto_now_add=True, verbose_name="Sotilgan sana")
+
+    class Meta:
+        verbose_name = "Sotuv"
+        verbose_name_plural = "Sotuvlar"
 
     def __str__(self):
         return f"{self.product.name} sale"
@@ -110,6 +130,10 @@ class SExpenseMachine(models.Model):
     info = models.TextField(blank=True, null=True, verbose_name="Qo'shimcha ma'lumot")
     expense_date = models.DateTimeField(auto_now_add=True, verbose_name="Harajat sanasi")
 
+    class Meta:
+        verbose_name = "Stanog Xarajati"
+        verbose_name_plural = "Stanog Xarajatlari"
+
     def __str__(self):
         return self.name
     
@@ -128,6 +152,10 @@ class SExpenses(models.Model):
     info = models.TextField(blank=True, null=True, verbose_name="Qo'shimcha ma'lumot")
     expense_date = models.DateTimeField(auto_now_add=True, verbose_name="Harajat sanasi")
 
+    class Meta:
+        verbose_name = "Xarajat"
+        verbose_name_plural = "Xarajatlar"
+
     def __str__(self):
         return self.worker
     
@@ -142,6 +170,10 @@ class SPaymentDebt(models.Model):
     amount = models.DecimalField(max_digits=25, decimal_places=2, verbose_name="To'langan summa")
     payment_date = models.DateTimeField(auto_now_add=True, verbose_name="To'lov sanasi")
     info = models.TextField(blank=True, null=True, verbose_name="Qo'shimcha ma'lumot")
+
+    class Meta:
+        verbose_name = "Qarz To'lovi"
+        verbose_name_plural = "Qarz To'lovlari"
 
     def __str__(self):
         return f"Payment from "
@@ -217,6 +249,10 @@ class SMonthlyReport(models.Model):
     total_customer_debt = models.DecimalField(max_digits=25, decimal_places=2, default=0, verbose_name="Haqlarimiz")
     total_supplier_debt = models.DecimalField(max_digits=25, decimal_places=2, default=0, verbose_name="Qarzlarimiz")   
     net_profit = models.DecimalField(max_digits=25, decimal_places=2, default=0, verbose_name="Sof foyda")
+
+    class Meta:
+        verbose_name = "Oylik Hisobot"
+        verbose_name_plural = "Oylik Hisobotlar"
 
     @transaction.atomic
     def save(self, *args, **kwargs):

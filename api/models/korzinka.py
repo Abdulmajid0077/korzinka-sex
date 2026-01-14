@@ -12,6 +12,10 @@ class Investors(models.Model):
 
     def __str__(self):
         return self.name
+    
+    class Meta:
+        verbose_name = "Investor"
+        verbose_name_plural = "Investorlar"
 
 class Products(models.Model):
     name = models.CharField(max_length=100, verbose_name="Ism")
@@ -21,6 +25,10 @@ class Products(models.Model):
     def __str__(self):
         return self.name
     
+    class Meta:
+        verbose_name = "Mahsulot"
+        verbose_name_plural = "Mahsulotlar"
+
 class Suppliers(models.Model):
     name = models.CharField(max_length=100, verbose_name="Ism")
     phone = models.CharField(max_length=15, unique=True, verbose_name="Telefon raqam")
@@ -30,6 +38,10 @@ class Suppliers(models.Model):
     def __str__(self):
         return self.name
     
+    class Meta:
+        verbose_name = "Yetkazib beruvchi"
+        verbose_name_plural = "Yetkazib beruvchilar"
+    
 class Customers(models.Model):
     name = models.CharField(max_length=100, verbose_name="Ism")
     phone = models.CharField(max_length=15, unique=True, verbose_name="Telefon raqam")
@@ -38,6 +50,10 @@ class Customers(models.Model):
 
     def __str__(self):
         return self.name
+    
+    class Meta:
+        verbose_name = "Xaridor"
+        verbose_name_plural = "Xaridorlar"
     
 class Purchases(models.Model):
     supplier = models.ForeignKey(Suppliers, on_delete=models.CASCADE, verbose_name="Yetkazib beruvchi")
@@ -50,6 +66,10 @@ class Purchases(models.Model):
 
     def __str__(self):
         return f"{self.product_name} from {self.supplier.name}"
+    
+    class Meta:
+        verbose_name = "Xarid"
+        verbose_name_plural = "Xaridlar"
     
     @transaction.atomic
     def save(self, *args, **kwargs):
@@ -87,6 +107,10 @@ class Sales(models.Model):
 
     def __str__(self):
         return f"{self.product.name} to {self.customer.name}"
+    
+    class Meta:
+        verbose_name = "Sotuv"
+        verbose_name_plural = "Sotuvlar"
     
     @transaction.atomic
     def save(self, *args, **kwargs):
@@ -131,6 +155,10 @@ class Expenses(models.Model):
     amount = models.DecimalField(max_digits=25, decimal_places=2, verbose_name="Summasi")
     expense_date = models.DateTimeField(auto_now_add=True, verbose_name="Harajat sanasi")
 
+    class Meta:
+        verbose_name = "Harajat"
+        verbose_name_plural = "Harajatlar"
+
 class ExpenseMachine(models.Model):
     CHOICES_TYPE = [
         ('Usta Haqqi', 'Usta Haqqi'),
@@ -141,6 +169,10 @@ class ExpenseMachine(models.Model):
     expense_type = models.CharField(max_length=50, choices=CHOICES_TYPE, verbose_name="Harajat turi")
     amount = models.DecimalField(max_digits=25, decimal_places=2, verbose_name="Summasi")
     expense_date = models.DateTimeField(auto_now_add=True, verbose_name="Harajat sanasi")
+
+    class Meta:
+        verbose_name = "Stanoq Harajati"
+        verbose_name_plural = "Stanoq Harajatlari"
         
 class PaymentDebt(models.Model):
     payment_choice = [
@@ -153,6 +185,10 @@ class PaymentDebt(models.Model):
     amount = models.DecimalField(max_digits=25, decimal_places=2, verbose_name="To'langan summa")
     payment_date = models.DateTimeField(auto_now_add=True, verbose_name="To'lov sanasi")
     info = models.TextField(blank=True, null=True, verbose_name="Qo'shimcha ma'lumot")
+
+    class Meta:
+        verbose_name = "Qarz To'lovi"
+        verbose_name_plural = "Qarz To'lovlari"
 
     def __str__(self):
         return f"Payment from {self.customer.name}"
@@ -234,6 +270,10 @@ class MonthlyReport(models.Model):
     total_supplier_debt = models.DecimalField(max_digits=25, decimal_places=2, default=0, verbose_name="Qarzlarimiz")
     total_customer_debt = models.DecimalField(max_digits=25, decimal_places=2, default=0, verbose_name="Haqlarimiz")
     net_profit = models.DecimalField(max_digits=25, decimal_places=2, default=0, verbose_name="Sof foyda")
+
+    class Meta:
+        verbose_name = "Oylik Hisobot"
+        verbose_name_plural = "Oylik Hisobotlar"
 
     @transaction.atomic
     def save(self, *args, **kwargs):

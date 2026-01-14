@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
 
     'api',
 ]
@@ -158,6 +159,12 @@ UNFOLD = {
                         "icon": "folder_supervised",
                         "link": reverse_lazy("admin:auth_group_changelist"),
                         "permission": lambda request: request.user.has_perm("auth.view_group"),
+                    },
+                    {
+                        "title": _("Foydalanuvchilar"),
+                        "icon": "person",
+                        "link": reverse_lazy("admin:api_user_changelist"),
+                        "permission": lambda request: request.user.has_perm("api.view_user"),
                     },
                 ],
             },
@@ -348,6 +355,24 @@ UNFOLD = {
             },
             ],
     },
+}
+
+
+from datetime import timedelta
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
+}
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+    'AUTH_HEADER_TYPES': ('Bearer',),
 }
 
 

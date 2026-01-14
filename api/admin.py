@@ -5,6 +5,24 @@ from decimal import Decimal
 from .models import Investors, Products, Purchases, Sales, Customers, Suppliers, Expenses, ExpenseMachine, PaymentDebt, MonthlyReport
 from .models import SProducts, SSupplier, SCustomers, SPurchases,  SSales, SExpenseMachine, SExpenses, SPaymentDebt, SMonthlyReport
 from .models import SalCustomers, SalSuppliers, SalProducts, SalPurchases, SalSales, SalPaymentDebts, SalExpenses, SalMonthlyReports
+from .models import User
+
+@admin.register(User)
+class UserAdmin(ModelAdmin):
+    list_display = ('username', 'phone', 'is_staff', 'is_admin', 'korzinka', 'seriyo', 'salfetka')
+    unfoldable_fieldsets = [
+        ("General", {"fields": ("username", "password")}),
+        ("Personal Info", {"fields": ("first_name", "last_name", "phone")}),
+        ("Module Permissions", {
+            "fields": ("korzinka", "seriyo", "salfetka"),
+            "classes": ("collapse",),  # yopiq boshlanadi
+        }),
+        ("Advanced Permissions", {
+            "fields": ("is_active", "is_staff", "is_admin", "groups", "user_permissions"),
+            "classes": ("collapse",),
+        }),
+    ]
+
 
 
 @admin.register(Investors)
